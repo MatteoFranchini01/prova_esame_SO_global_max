@@ -1,96 +1,107 @@
-**Italian README (README_IT.md):** 🇮🇹
+# Readme
 
-```markdown
-# Sistema di Controllo Massimo Globale
+## Server with Signal Handling and Forking
 
-Questo progetto è un semplice sistema di controllo per il massimo globale tra due numeri. Il server accetta connessioni dai client, riceve due numeri interi e restituisce il massimo tra i due. Inoltre, il server può essere avviato o fermato attraverso i segnali `SIGUSR1` e `SIGUSR2`.
+### Overview
 
-## Caratteristiche
+This program is a server implemented in C that handles incoming connections, utilizes signal handling, and employs forked processes to handle multiple clients simultaneously. The server can switch between two modes: one where it calculates the global maximum value among connected clients and another where it calculates the maximum value locally for each client.
 
-- **Massimo Globale Attivato/Disattivato**: Il server può essere avviato o fermato attraverso i segnali `SIGUSR1` e `SIGUSR2`.
-  
-- **Calcolo del Massimo**: Se il massimo globale è attivato, il server calcolerà il massimo tra i due numeri e terrà traccia del massimo globale. In caso contrario, calcolerà semplicemente il massimo tra i due numeri.
+### Features
 
-## Utilizzo
+- **Signal Handling:** The server responds to two custom signals (`SIGUSR1` and `SIGUSR2`). `SIGUSR1` toggles between global and local maximum calculation modes, while `SIGUSR2` resets the global maximum value.
 
-1. **Compila il Codice:**
-   ```bash
-   gcc massimo_globale.c -o massimo_globale
-   ```
+- **Forking:** Upon accepting a client connection, the server forks a new process to handle communication with the client, allowing multiple clients to be served concurrently.
 
-2. **Avvia il Server:**
-   ```bash
-   ./massimo_globale
-   ```
+- **Socket Communication:** The server communicates with clients over a TCP socket. Clients send pairs of integers, and the server responds with either the local maximum (in local mode) or the global maximum (in global mode).
 
-3. **Connetti i Client:**
-   Utilizza un programma client per connetterti al server e inviare due numeri.
+### How to Compile and Run
 
-   Esempio:
-   ```bash
-   ./client 10 20   # Invia i numeri 10 e 20 al server
-   ```
+Compile the code using a C compiler (e.g., `gcc`) by running:
 
-   I risultati verranno visualizzati sul terminale del server.
-
-4. **Controlla il Massimo Globale:**
-   Puoi attivare o disattivare il calcolo del massimo globale inviando i segnali `SIGUSR1` e `SIGUSR2` al server.
-
-## Contributi
-
-Senti libero di contribuire a questo progetto inviando segnalazioni di bug o richieste di nuove funzionalità.
-
-## Licenza
-
-Questo progetto è concesso in licenza secondo i termini della [Licenza MIT](LICENSE).
-
----
+```bash
+gcc server.c -o server
 ```
 
-**English README (README.md):** 🇬🇧 🇺🇸
+Run the compiled executable:
 
-```markdown
-# Global Maximum Control System
+```bash
+./server
+```
 
-This project is a simple control system for the global maximum between two numbers. The server accepts connections from clients, receives two integers, and returns the maximum of the two. Additionally, the server can be started or stopped through `SIGUSR1` and `SIGUSR2` signals.
+### Usage
 
-## Features
+- The server listens on port 8765 by default. Clients can connect to the server and send pairs of integers.
 
-- **Global Maximum On/Off**: The server can be started or stopped through `SIGUSR1` and `SIGUSR2` signals.
-  
-- **Maximum Calculation**: If the global maximum is on, the server will calculate the maximum between two numbers and keep track of the global maximum. Otherwise, it will simply calculate the maximum between the two numbers.
+- The server responds with either the local maximum (when in local mode) or the global maximum (when in global mode).
 
-## Usage
+- To toggle between global and local mode, send `SIGUSR1` to the server.
 
-1. **Compile the Code:**
-   ```bash
-   gcc massimo_globale.c -o massimo_globale
-   ```
+- To reset the global maximum value, send `SIGUSR2` to the server.
 
-2. **Run the Server:**
-   ```bash
-   ./massimo_globale
-   ```
+### Signal Handling
 
-3. **Connect Clients:**
-   Use a client program to connect to the server and send two numbers.
+- **SIGUSR1 (`start` mode toggle):**
+  - Description (EN): Toggles between global and local mode.
+  - Descrizione (IT): Cambia tra modalità globale e locale.
 
-   Example:
-   ```bash
-   ./client 10 20   # Send numbers 10 and 20 to the server
-   ```
+- **SIGUSR2 (`val_max_glob` reset):**
+  - Description (EN): Resets the global maximum value.
+  - Descrizione (IT): Reimposta il valore massimo globale.
 
-   Results will be displayed on the server terminal.
+### Notes
 
-4. **Control Global Maximum:**
-   You can turn on or off the global maximum calculation by sending `SIGUSR1` and `SIGUSR2` signals to the server.
-
-## Contributing
-
-Feel free to contribute to this project by submitting bug reports or feature requests.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+- This server is a basic example and may need additional error handling and security measures for production use.
 
 ---
+
+# Readme (Italiano)
+
+## Server con Gestione dei Segnali e Forking
+
+### Panoramica
+
+Questo programma è un server implementato in C che gestisce le connessioni in arrivo, utilizza la gestione dei segnali e impiega processi biforcati per gestire contemporaneamente più client. Il server può passare tra due modalità: una in cui calcola il valore massimo globale tra i client connessi e un'altra in cui calcola il valore massimo localmente per ogni client.
+
+### Funzionalità
+
+- **Gestione dei Segnali:** Il server risponde a due segnali personalizzati (`SIGUSR1` e `SIGUSR2`). `SIGUSR1` alterna tra le modalità di calcolo del massimo globale e locale, mentre `SIGUSR2` resetta il valore massimo globale.
+
+- **Biforcazione:** All'accettare una connessione client, il server biforca un nuovo processo per gestire la comunicazione con il client, consentendo il servizio simultaneo di più client.
+
+- **Comunicazione Socket:** Il server comunica con i client su una socket TCP. I client inviano coppie di interi, e il server risponde con il massimo locale (in modalità locale) o il massimo globale (in modalità globale).
+
+### Come Compilare ed Eseguire
+
+Compila il codice utilizzando un compilatore C (ad esempio, `gcc`) eseguendo:
+
+```bash
+gcc server.c -o server
+```
+
+Esegui il file eseguibile compilato:
+
+```bash
+./server
+```
+
+### Utilizzo
+
+- Il server ascolta sulla porta 8765 di default. I client possono connettersi al server e inviare coppie di interi.
+
+- Il server risponde con il massimo locale (in modalità locale) o il massimo globale (in modalità globale).
+
+- Per alternare tra le modalità globale e locale, inviare `SIGUSR1` al server.
+
+- Per reimpostare il valore massimo globale, inviare `SIGUSR2` al server.
+
+### Gestione dei Segnali
+
+- **SIGUSR1 (cambio modalità `start`):**
+  - Descrizione: Alterna tra modalità globale e locale.
+
+- **SIGUSR2 (reset `val_max_glob`):**
+  - Descrizione: Reimposta il valore massimo globale.
+
+### Note
+
+- Questo server è un esempio di base e potrebbe necessitare di ulteriore gestione degli errori e misure di sicurezza per un uso in produzione.
